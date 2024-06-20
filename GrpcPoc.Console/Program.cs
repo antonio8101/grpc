@@ -2,7 +2,7 @@
 
 using GrpcPoc.Client;
 
-var fileServiceFacade = new FileServiceClientFacade("http://localhost:5174");
+var fileServiceFacade = new FileServiceClientFacade("http://localhost:5000");
 
 try
 {

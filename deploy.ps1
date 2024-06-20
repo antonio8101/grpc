@@ -6,11 +6,6 @@ $exePath = "C:\Users\abruno\source\repos\GrpcPoc\GrpcPoc.Service\bin\Release\net
 # Check service existance
 $service = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
 
-# Automatic start mode
-$serviceRecoveryOptions = New-Object -TypeName "System.ServiceProcess.ServiceController"
-$serviceRecoveryOptions.ServiceName = $serviceName
-$serviceRecoveryOptions.StartType = [System.ServiceProcess.ServiceStartMode]::Automatic
-
 # Utilizza sc.exe per impostare le opzioni di ripristino del servizio
 sc.exe failure $serviceName reset= 0 actions= restart/60000/restart/60000/restart/60000
 
