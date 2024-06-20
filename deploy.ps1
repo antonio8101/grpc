@@ -1,21 +1,29 @@
 ﻿$serviceName = "MyGrpcService"
 $serviceDisplayName = "My GRPC Service"
 $serviceDescription = "A .NET Core GRPC Service running as a Windows Service"
-$exePath = "C:\path\to\publish\MyGrpcService.exe --windows-service"
+$exePath = "C:\Users\abruno\source\repos\GrpcPoc\GrpcPoc.Service\bin\Release\net8.0\publish\GrpcPoc.Service.exe --windows-service"
 
-# Controlla se il servizio esiste già
+# Check service existance
 $service = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
 
+# Automatic start mode
+$serviceRecoveryOptions = New-Object -TypeName "System.ServiceProcess.ServiceController"
+$serviceRecoveryOptions.ServiceName = $serviceName
+$serviceRecoveryOptions.StartType = [System.ServiceProcess.ServiceStartMode]::Automatic
+
+# Utilizza sc.exe per impostare le opzioni di ripristino del servizio
+sc.exe failure $serviceName reset= 0 actions= restart/60000/restart/60000/restart/60000
+
 if ($service -eq $null) {
-    # Se il servizio non esiste, crealo
+    # if not exists
     New-Service -Name $serviceName -BinaryPathName $exePath -DisplayName $serviceDisplayName -Description $serviceDescription -StartupType Automatic
-    Write-Output "Il servizio $serviceName è stato creato con successo."
+    Write-Output "Serivce $serviceName created successfully."
 } else {
-    Write-Output "Il servizio $serviceName esiste già."
+    Write-Output "Service $serviceName already exists."
 }
 
-# Facoltativo: Avvia il servizio se è stato appena creato
+# Start the service
 if ($service -eq $null) {
     Start-Service -Name $serviceName
-    Write-Output "Il servizio $serviceName è stato avviato."
+    Write-Output "Services $serviceName started."
 }
